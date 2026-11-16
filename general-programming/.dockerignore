@@ -1,0 +1,39 @@
+# Keep Docker build contexts small and secret-free if this skill package is containerized.
+# Do not exclude SKILL.md, README.md, agents/, or .agent/ handoff notes.
+
+.git/
+.gitignore
+.dockerignore
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+*.secret
+*.key
+*.pem
+
+# Common dependencies, caches, and generated output
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+coverage/
+dist/
+build/
+out/
+
+# Editor and IDE metadata
+.idea/
+.vscode/
+*.swp
+*.swo

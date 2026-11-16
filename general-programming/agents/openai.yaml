@@ -1,0 +1,7 @@
+interface:
+  display_name: "General Programming"
+  short_description: "Consistent, safe programming workflow"
+  default_prompt: "Use $general-programming to implement this software change with proper structure, documentation, tests, Docker support, and safe Git handling."
+
+policy:
+  allow_implicit_invocation: true

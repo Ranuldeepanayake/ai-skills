@@ -1,0 +1,39 @@
+# Repository-level ignores for this documentation-only, cross-platform skill package.
+# Keep source instructions, metadata, README files, and agent handoff notes trackable.
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+*.secret
+*.key
+*.pem
+
+# Common language/tool caches and generated output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+dist/
+build/
+out/
+
+# Editor and IDE metadata
+.idea/
+.vscode/*
+!.vscode/settings.example.json
+*.swp
+*.swo
