@@ -4,8 +4,8 @@
 
 ## Current state
 
-- Task: Improve the `general-programming` skill with persistent agent-session handoffs and mandatory stack-appropriate `.gitignore` and `.dockerignore` files; distribute it to Codex and Claude global skill directories.
-- Status: Workspace package updated and copied to both global skill directories; final exact-tree verification completed.
+- Task: Improve the `general-programming` skill with a universal application logger requirement, persistent agent-session handoffs, and mandatory stack-appropriate `.gitignore` and `.dockerignore` files; commit locally and distribute it to Codex and Claude global skill directories.
+- Status: Logger guidance and README are updated, committed locally, and copied to both global skill directories; no push was performed.
 - Source package: `C:\Users\ranul\Documents\GitHub\ai-skills\general-programming`
 - Target packages: `C:\Users\ranul\.codex\skills\general-programming` and `C:\Users\ranul\.claude\skills\general-programming`
 
@@ -16,11 +16,16 @@
 - Updated the skill workflow and completion checklist to include the new artifacts and handoff update.
 - Updated the package README with the new behavior.
 - Added package-level `.gitignore` and `.dockerignore` suitable for Markdown/YAML documentation plus common validation tooling.
+- Inspected logger implementations in `s3-app-backend`, `chatbot`, and `caching`.
+- Captured the shared patterns: centralized logger entry point, ISO timestamps, severity, service/module context, structured metadata, safe startup configuration diagnostics, dependency/provider outcomes, request/provider timing context, readiness, shutdown, and secret redaction.
+- Added universal logger requirements to `SKILL.md`, including logger contract, startup lifecycle logging, request/message data, error handling, tests, README documentation, and completion checks.
+- Updated the README with the universal logging baseline.
 
 ## Validation and next action
 
-- Structural validation passed: required files exist and `SKILL.md` front matter contains the expected name and description.
-- Global-copy validation passed: both target trees contain the same source files with matching SHA-256 hashes and no unintended nested directories.
+- Structural validation passed: required files exist, `SKILL.md` front matter is valid, all required logger guidance checks are present, and `git diff --check` reported no whitespace errors.
+- Global-copy validation passed: both target trees contain the exact source file set with matching SHA-256 hashes.
+- Local commit created: `baa6220` (`Improve universal application logging guidance`); branch is one commit ahead of `origin/develop` and was not pushed.
 - The bundled Python validator was not runnable because this environment has no `python`, `py`, or `python3` command.
-- The workspace root is not a Git repository, so Git status was not applicable.
-- Next action: future agents should read this summary first and use the updated skill behavior for project work.
+- Repository synchronization completed with `git fetch origin` and `git pull --ff-only origin develop`; the branch was already up to date.
+- Next action: future agents should read this summary first and use the universal logger requirements for executable project work.

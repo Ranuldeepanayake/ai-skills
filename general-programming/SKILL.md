@@ -90,6 +90,26 @@ For deployable applications, provide containerization when appropriate:
 
 Use the project's standard structured logger where available. Useful events should include an ISO-8601 timestamp, severity, module/component, operation name, and safe context such as request or job identifiers. Preserve actionable error context, avoid swallowing failures, and do not expose secrets or sensitive internals.
 
+## Universal application logging
+
+Every executable project must implement a proper application-wide logger, not a collection of unrelated `print`, `console`, or ad hoc debug statements. Prefer the repository's established logging library and conventions; otherwise create one centralized logger module with a small, documented API and use it from every application module. A lightweight wrapper is acceptable for a small project, but it must still produce consistent records and support metadata.
+
+The logger contract must provide, at minimum:
+
+- an ISO-8601 UTC timestamp on every record;
+- a severity level such as `debug`, `info`, `warn`, or `error`;
+- a stable service/application name;
+- a module or component name, preferably through child/module loggers so ownership is automatic;
+- an event or operation name plus a human-readable message where the framework supports both;
+- structured, searchable metadata such as request ID, correlation ID, provider, endpoint host, status, duration, retry count, result count, or cache hit/miss; and
+- safe error serialization with error type/message and stack details in server-side logs when appropriate.
+
+Log lifecycle and operational events consistently. Before the service accepts traffic, emit startup records for configuration loaded, dependency/provider initialization and connectivity results, and the final server/listener readiness event. On startup, record safe non-secret configuration such as service version, environment, host/port, selected providers, feature flags, log level, sanitized endpoint host/path, and whether credentials or sensitive variables are configured. Never log passwords, tokens, API keys, authorization headers, cookies, connection strings with userinfo, certificate contents, prompts, or raw sensitive payloads. Represent sensitive settings with presence booleans and redact sensitive fields centrally.
+
+For HTTP or message-driven services, include request or message lifecycle data: method or message type, route/template rather than uncontrolled payloads, status/result, duration, request/correlation ID, and safe client or provider context. Log dependency calls, retries, degraded fallbacks, validation failures, and unexpected errors at the appropriate level. Emit shutdown records with the signal/reason and resource cleanup result. Do not return raw exception messages or internal stack traces to clients; return stable generic errors and correlate them with the server log.
+
+Keep startup diagnostics reusable and testable, for example through a `startupConfigSummary()`-style function that returns only approved safe fields. Add tests or equivalent checks proving that records contain timestamps and module context, startup diagnostics omit secrets, error paths retain useful context, and request/provider metadata is emitted. Document the logger location, record shape, levels, redaction rules, startup events, log configuration, local viewing commands, container/production collection, and troubleshooting examples in the README. If the project already has a universal logger, extend it consistently instead of introducing a second logging path.
+
 ## Implementation workflow
 
 1. Synchronize safely with the remote using the pre-work Git procedure.
@@ -97,14 +117,15 @@ Use the project's standard structured logger where available. Useful events shou
 3. State the intended change, assumptions, affected files, and validation plan.
 4. Design the smallest well-organized, modular change that preserves existing behavior.
 5. Create or update source files with required headers, callable documentation, and focused logic comments.
-6. Create or update the persistent agent session summary and record the intended change, assumptions, and validation plan.
-7. Add or update both `.gitignore` and `.dockerignore` for the detected technology stack and repository layout.
-8. Add or update tests and container/deployment assets as applicable.
-9. Update the README with feature, bug-fix, usage, setup, deployment, and limitation changes.
-10. Run appropriate validation and review results for regressions or newly introduced bugs.
-11. Update the session summary with completed actions, validation results, blockers, and the next action.
-12. Review the diff for accidental changes, secrets, missing comments, naming inconsistencies, documentation drift, and intended files left untracked.
-13. Report changes, validation results, environment-dependent limitations, and current Git status.
+6. Establish or inspect the universal logger contract before implementing executable behavior.
+7. Create or update the persistent agent session summary and record the intended change, assumptions, and validation plan.
+8. Add or update both `.gitignore` and `.dockerignore` for the detected technology stack and repository layout.
+9. Add or update tests and container/deployment assets as applicable.
+10. Update the README with feature, bug-fix, usage, setup, deployment, logging, and limitation changes.
+11. Run appropriate validation and review results for regressions or newly introduced bugs.
+12. Update the session summary with completed actions, validation results, blockers, and the next action.
+13. Review the diff for accidental changes, secrets, missing comments, naming inconsistencies, documentation drift, and intended files left untracked.
+14. Report changes, validation results, environment-dependent limitations, and current Git status.
 
 ## Completion checklist
 
@@ -117,6 +138,9 @@ Use the project's standard structured logger where available. Useful events shou
 - [ ] New or substantially rewritten source files have purpose headers.
 - [ ] Functions, methods, and public types are documented.
 - [ ] Complex or important logic has accurate explanatory comments.
+- [ ] Every executable project has one universal logger with timestamps, severity, service/module context, structured safe metadata, and centralized redaction/error handling.
+- [ ] Startup logs record safe configuration diagnostics, dependency/provider outcomes, and final readiness before traffic is accepted; shutdown and failure paths are also observable.
+- [ ] Logger tests or equivalent checks cover record shape, startup redaction, and important request/provider metadata.
 - [ ] README reflects all changes and covers purpose, stack, logic, setup, deployment, usage, and limitations.
 - [ ] Relevant tests were added or updated, run, and reviewed for regressions.
 - [ ] `.gitignore` and `.dockerignore` exist, are tailored to the stack, and exclude secrets and irrelevant generated files without hiding intended source or documentation.

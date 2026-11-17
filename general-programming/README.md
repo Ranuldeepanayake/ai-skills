@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This portable skill gives Codex and Claude a consistent workflow for general programming in any language. It emphasizes requirements analysis, maintainable and modular code, clear naming, developer-facing comments, comprehensive documentation, regression-safe testing, containerization, safe Git behavior, shell portability, and honest validation.
+This portable skill gives Codex and Claude a consistent workflow for general programming in any language. It emphasizes requirements analysis, maintainable and modular code, clear naming, developer-facing comments, universal structured logging, comprehensive documentation, regression-safe testing, containerization, safe Git behavior, shell portability, and honest validation.
 
 ## Contents
 
@@ -23,6 +23,9 @@ The skill requires agents to:
 - add a purpose comment block to each created or substantially rewritten source file;
 - document every function, method, and public type;
 - explain important or complex logic with focused comments;
+- implement one universal application logger for every executable project, with ISO timestamps, severity, service/module context, structured safe metadata, centralized redaction, and useful error context;
+- emit safe startup diagnostics for configuration, dependency/provider initialization, and final readiness before accepting traffic, plus observable shutdown and failure events;
+- test or otherwise verify logger record shape, startup secret redaction, and important request/provider metadata;
 - maintain a README reflecting all changes, including features, bug fixes, usage, purpose, stack, logic, setup, deployment, and limitations;
 - add or update tests for behavioral changes and check for regressions or newly introduced bugs;
 - maintain a persistent, secret-safe agent session summary with actions, decisions, validation, blockers, and next steps;
@@ -39,6 +42,12 @@ For Codex, place or register the `general-programming` directory in the Codex sk
 For Claude, expose the same directory as a project skill or add the contents of `SKILL.md` to the relevant Claude project or agent skill configuration. Claude does not need `agents/openai.yaml`.
 
 The skill expects a project-level `.agent/session-summary.md` (or the repository's existing equivalent). Read it at session start, update it during meaningful milestones, and update it before handoff or completion. It is an AI-oriented operational checkpoint and should not contain secrets.
+
+## Universal logging baseline
+
+Use the existing logging library when the project has one; otherwise create a centralized logger module rather than scattering direct console or print calls. Each record should include an ISO-8601 UTC timestamp, level, service name, module/component, event or operation, message, and safe structured metadata. Include request or correlation IDs, status, duration, provider/endpoint context, retry information, and result counts when relevant.
+
+Startup logging should include safe configuration and environment diagnostics, dependency/provider connectivity results, and the final listener/readiness event before the application accepts traffic. Sanitize endpoints and log only credential-presence booleans for secrets. Never log passwords, tokens, API keys, authorization headers, cookies, connection strings with credentials, certificate contents, prompts, or sensitive payloads. Document log levels, redaction rules, startup events, collection/viewing commands, and troubleshooting guidance in the project README.
 
 ## Validation
 
